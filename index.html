@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do List</title>
+    <link id="favicon" rel="icon" href="src/logo.png" type="image/png" />
+    <script src="https://cdn.tailwindcss.com/3.4.15"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jura:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: "Jura", sans-serif;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+
+      a {
+        animation: bounce 1s ease infinite;
+      }
+
+      a:hover {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+      }
+
+      .patata:hover {
+        transform: scale(1.1);
+        transition: transform 0.3s ease;
+      }
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #2d2d2d;
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background-color: #4fd1c5;
+        border-radius: 4px;
+        border: 2px solid #2d2d2d;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background-color: #38b2ac;
+      }
+
+      #tasks-container, #saved-tasks-container, #completed-tasks-log {
+        max-height: 300px;
+        overflow-y: auto; 
+        padding-right: 4px;
+      }
+
+      .popup-content {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-900 text-gray-200 min-h-screen flex items-center justify-center"
+  >
+    <div
+      id="todo-app"
+      class="w-full max-w-2xl p-6 bg-gray-800 rounded-lg shadow-lg relative"
+    >
+      <h1 class="text-3xl font-bold mb-4 text-center text-teal-400">
+        To-Do List
+      </h1>
+
+      <div class="flex items-center mb-6">
+        <input
+          type="text"
+          id="new-task"
+          class="flex-grow p-3 rounded-l-lg bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none"
+          placeholder="Add a new task"
+        />
+        <button
+          id="add-task-btn"
+          class="bg-teal-500 hover:bg-teal-600 text-white px-4 py-3 rounded-r-lg transition"
+        >
+          Add
+        </button>
+      </div>
+
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold mb-2 text-teal-400">Tasks</h2>
+        <div id="tasks-container" class="space-y-3"></div>
+        <p id="no-tasks-msg" class="text-gray-400 italic text-center hidden">
+          No tasks yet! Add some tasks above.
+        </p>
+      </div>
+
+      <div class="flex justify-between items-center mt-6">
+        <button
+          id="reset-btn"
+          class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition"
+        >
+          Reset All
+        </button>
+        <div>
+          <span class="text-teal-400 font-bold" id="pending-tasks-count"
+            >0</span
+          >
+          tasks pending
+        </div>
+      </div>
+
+      <div class="fixed bottom-4 left-4 space-y-4">
+        <div
+          id="saved-folder-icon"
+          class="cursor-pointer flex items-center justify-center text-4xl patata"
+        >
+          <i class="fas fa-folder"></i>
+        </div>
+
+        <div
+          id="log-icon"
+          class="cursor-pointer flex items-center justify-center patata"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-12 w-12 text-gray-400 hover:text-gray-200 transition"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <a
+        href="https://github.com/MrOrdenador"
+        target="_blank"
+        class="fixed bottom-3 right-3 bg-111827 text-white p-3 w-12 h-12 rounded-full flex items-center justify-center hover:bg-gray-800"
+      >
+        <i class="fab fa-github text-xl"></i>
+      </a>
+    </div>
+
+    <div
+      id="saved-popup"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50"
+    >
+      <div class="bg-gray-800 rounded-lg p-6 shadow-lg w-96">
+        <h2 class="text-lg font-bold text-teal-400 mb-4">Saved Tasks</h2>
+        <div id="saved-tasks-container" class="space-y-3"></div>
+        <button
+          id="close-saved-popup"
+          class="w-full mt-4 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="log-popup"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50"
+    >
+      <div class="bg-gray-800 rounded-lg p-6 shadow-lg w-96">
+        <h2 class="text-lg font-bold text-teal-400 mb-4">
+          Completed Tasks Log
+        </h2>
+        <div id="completed-tasks-log" class="space-y-3"></div>
+        <button
+          id="close-log-popup"
+          class="w-full mt-4 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
